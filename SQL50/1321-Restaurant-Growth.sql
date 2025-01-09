@@ -15,7 +15,7 @@
 -- FROM Customer
 -- -- here cuz i don`t want to the first 6 days so off set delets them 
 -- limit 100000000000 offset 6;
--- or use row number 
+-- or use a cte and start date with 6 days after first day
 WITH RollingWindow AS (
     SELECT
         visited_on,
@@ -27,6 +27,7 @@ WITH RollingWindow AS (
             ORDER BY visited_on
             RANGE BETWEEN INTERVAL 6 DAY PRECEDING AND CURRENT ROW
         ) / 7, 2) AS average_amount,
+        -- this over do the same job as (select min(visited_on) from customers)
         MIN(visited_on) OVER () + INTERVAL 6 DAY AS start_date
     FROM Customer
 )
