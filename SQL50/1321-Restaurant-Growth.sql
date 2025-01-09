@@ -35,12 +35,17 @@
 -- FROM RollingWindow
 -- WHERE visited_on >= start_date
 -- ORDER BY visited_on;
--- or use sekf join 
+-- or use self join 
 select a.visited_on , sum(amount) as amount ,
 round(sum(amount)/7,2) as average_amount
+  -- here u want to get all dates and start comparing
 from (select distinct(visited_on) from Customer ) a join Customer b
-on datediff(a.visited_on , b.visited_on ) between 0 and 6 
+  -- u get ur range from 0 to 6 means all 7 days including the current date
+on datediff(a.visited_on , b.visited_on ) between 0 and 6
+  -- then u group by each date to find which does actually have 7 days interval
 group by  a.visited_on
+  -- this steps gives u date that has 6 days befor it 7 includin date itself
 having count(distinct(b.visited_on)) =7
+  -- ordering was asked 
 order by a.visited_on 
 
